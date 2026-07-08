@@ -4,7 +4,7 @@
 
 `biograph` turns unstructured scientific literature into a queryable knowledge
 graph and layers three complementary retrieval paradigms on top of it. It began
-life as a QIAGEN Hackathon notebook (`QIAGEN_Hackathon.ipynb`) and has been
+life as a workshop notebook and has been
 refactored into a modular, tested Python package with two new graph-native
 reasoning components.
 
