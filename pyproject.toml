@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "biograph"
+version = "0.1.0"
+description = "From Papers to Precision: a biomedical Knowledge-Graph + GraphRAG pipeline with GraphSAGE and G-Retriever."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "QIAGEN Hackathon Team" }]
+keywords = [
+    "knowledge-graph", "graphrag", "biomedical-nlp", "graphsage",
+    "g-retriever", "gnn", "retrieval-augmented-generation", "gliner",
+]
+
+# Core dependencies needed to run the offline demo (synthetic graph, GraphSAGE,
+# G-Retriever retrieval + textualisation). Heavier / service-backed extras below.
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "networkx>=3.1",
+    "pyyaml>=6.0",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+# Text encoders + zero-shot relation extraction (large model downloads).
+nlp = [
+    "sentence-transformers>=2.6",
+    "gliner>=0.2.6",
+    "transformers>=4.40",
+    "torch>=2.2",
+]
+# Literature ingestion from PubMed / NCBI Entrez.
+ingest = ["biopython>=1.83"]
+# Graph stores.
+graph = ["kuzu>=0.4", "neo4j>=5.20"]
+# Graph neural networks (GraphSAGE, G-Retriever soft prompt).
+gnn = ["torch>=2.2", "torch-geometric>=2.5", "pcst_fast>=1.0.10"]
+# Local, key-free LLM answer synthesis for G-Retriever (Ollama + structured outputs).
+llm = ["instructor>=1.5", "openai>=1.30"]
+# Interactive visualisation + dashboards.
+viz = ["pyvis>=0.3.2", "matplotlib>=3.8", "seaborn>=0.13"]
+# Everything (developer install).
+all = [
+    "biograph[nlp,ingest,graph,gnn,llm,viz]",
+    "pytest>=8.0",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+biograph-pipeline = "biograph.cli.run_pipeline:main"
+biograph-train-sage = "biograph.cli.train_graphsage:main"
+biograph-gretriever = "biograph.cli.run_gretriever:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

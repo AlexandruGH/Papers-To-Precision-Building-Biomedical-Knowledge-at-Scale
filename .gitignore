@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Project artifacts
+demo_db/
+*.kuzu/
+data/cache/
+outputs/
+*.html
+!docs/**/*.html
+checkpoints/
+*.pt
+*.ckpt
+
+# Secrets / config
+.env
+
+# Notebooks / editors
+.ipynb_checkpoints/
+.vscode/
+.idea/
+.DS_Store
+
+# Test / tooling
+.pytest_cache/
+.ruff_cache/

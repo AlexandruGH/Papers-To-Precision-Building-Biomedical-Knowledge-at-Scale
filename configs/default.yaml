@@ -1,0 +1,44 @@
+# Default configuration for the biograph pipeline.
+# Every value can be overridden on the CLI (see scripts/) or by editing a copy.
+
+ingestion:
+  query: "(Lung Cancer) AND (EGFR) AND (Resistance)"
+  max_results: 25
+  request_delay_s: 0.2          # politeness delay between Entrez efetch calls
+
+extraction:
+  gliner_model: "knowledgator/gliner-relex-large-v1.0"
+  entity_labels: ["Disease", "Gene", "Drug", "Mutation"]
+  relation_labels: ["treats", "inhibits", "causes", "targets"]
+  threshold: 0.10               # GLiNER relation confidence floor
+
+embeddings:
+  # Domain-adapted PubMedBERT bi-encoder; falls back to all-MiniLM-L6-v2 offline.
+  model: "pritamdeka/S-PubMedBert-MS-MARCO"
+  dim: 768
+  entity_link_threshold: 0.92   # cosine sim above which two mentions are merged
+
+graph:
+  backend: "kuzu"               # "kuzu" (embedded, default) or "neo4j"
+  kuzu_path: "./demo_db"
+
+graphsage:
+  hidden_dim: 256
+  out_dim: 128
+  num_layers: 2
+  dropout: 0.3
+  aggr: "mean"                  # mean | max | lstm (SAGEConv aggregator)
+  epochs: 100
+  lr: 0.01
+  neighbor_samples: [15, 10]    # fan-out per layer for NeighborLoader
+  batch_size: 256
+
+g_retriever:
+  top_k_nodes: 15
+  top_k_edges: 30
+  pcst_cost: 0.5                # edge cost (Steiner tree sparsity knob)
+  max_prompt_tokens: 3500
+  # Local LLM served by Ollama (no API key). Pull the tag first: `ollama pull qwen3.5:2b`.
+  # Smaller alternatives: qwen3:0.6b (smallest) · qwen3:1.7b.
+  llm_model: "qwen3.5:2b"
+  llm_max_tokens: 1024
